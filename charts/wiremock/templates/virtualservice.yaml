@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  gateways:
+    - istio-system/instance-domain-gateway
+    - istio-system/global-accelerator-gateway
+  hosts:
+    - {{.Values.virtual.role}}.{{.Values.virtual.host }}
+    - {{.Values.virtual.instance}}.{{.Values.virtual.host }}
+  http:
+    - match:
+        - uri:
+            prefix: /{{ include "application.name" . }}/
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: {{ include "application.fullname" . }}.{{ .Values.namespace }}.svc.cluster.local
+            port:
+              number: 8080

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        {{- if .Values.istioOPA.enabled }}
+        opa-istio-envoyfilter: enabled
+        {{- end }}
+    spec:
+      imagePullSecrets:
+        - name: registry-credential
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Release.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /home/wiremock/mappings
+              name: mappings
+            - mountPath: /home/wiremock/__files
+              name: responses
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: {{ .Values.probeSettings.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probeSettings.periodSeconds }}
+            timeoutSeconds: {{ .Values.probeSettings.timeoutSeconds }}
+            failureThreshold: {{ .Values.probeSettings.failureThreshold }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: mappings
+          configMap:
+            name: mappings
+        - name: responses
+          configMap:
+            name: responses

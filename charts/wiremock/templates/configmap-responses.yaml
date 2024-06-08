@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  hello-world-restricted.json: |
+    {
+      "hello": "world-restricted"
+    }
+  hello-world.json: |
+    {
+      "hello": "world"
+    }
+kind: ConfigMap
+metadata:
+  name: responses
+  namespace: {{ .Values.namespace }}

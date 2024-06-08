@@ -1,0 +1,42 @@
+apiVersion: v1
+data:
+  hello-world-restricted.json: |
+    {
+      "mappings": [
+        {
+          "request": {
+            "method": "GET",
+            "urlPathPattern": "/restricted"
+          },
+          "response": {
+            "status": 200,
+            "bodyFileName": "hello-world-restricted.json",
+            "headers": {
+              "Content-Type": "application/json;charset=UTF-8"
+            }
+          }
+        }
+      ]
+    }
+  hello-world.json: |
+    {
+      "mappings": [
+        {
+          "request": {
+            "method": "GET",
+            "urlPathPattern": "/hello"
+          },
+          "response": {
+            "status": 200,
+            "bodyFileName": "hello-world.json",
+            "headers": {
+              "Content-Type": "application/json;charset=UTF-8"
+            }
+          }
+        }
+      ]
+    }
+kind: ConfigMap
+metadata:
+  name: mappings
+  namespace: {{ .Values.namespace }}

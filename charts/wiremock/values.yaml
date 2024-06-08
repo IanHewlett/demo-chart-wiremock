@@ -1,0 +1,63 @@
+# Default values for wiremock.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/ianhewlett/wiremock
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: 0.0.1
+
+imagePullSecrets:
+  - registry-credential
+nameOverride: ""
+fullnameOverride: ""
+
+podSecurityContext:
+  runAsUser: 10001
+  runAsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+      - all
+  allowPrivilegeEscalation: false
+  runAsUser: 10001
+  runAsGroup: 2000
+  readOnlyRootFilesystem: true
+
+service:
+  port: 8080
+
+resources:
+  requests:
+    cpu: 1500m
+    memory: 1536Mi
+  limits:
+    cpu: "2"
+    memory: 2048Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+probeSettings:
+  initialDelaySeconds: 60
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 2
+
+istioOPA:
+  enabled: true
+
+namespace: wiremock
+
+virtual:
+  gateway: istio-system/sandbox-wildcard-gateway
+  host: preferencedefender.com
+  role: sbxdev
+  instance: sbxdev-aws-us-east-2

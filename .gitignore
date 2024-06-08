@@ -1,0 +1,5 @@
+.idea
+charts/*/charts
+Chart.lock
+tmp-manifest.yaml
+packages
