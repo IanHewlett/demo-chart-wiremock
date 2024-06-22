@@ -1,0 +1,16 @@
+name: "Runs when there is a tag event"
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  on-tag:
+    uses: IanHewlett/demo-github-actions/.github/workflows/chart-on-tag.yml@main
+    with:
+      chart_name: wiremock
+    secrets:
+      vault_addr: ${{ secrets.VAULT_ADDR }}
+      vault_namespace: ${{ secrets.VAULT_NAMESPACE }}
+      vault_role: ${{ secrets.VAULT_ROLE }}

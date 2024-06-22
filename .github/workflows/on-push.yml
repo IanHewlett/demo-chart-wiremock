@@ -1,0 +1,16 @@
+name: "Runs when there is a push event"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  on-push:
+    uses: IanHewlett/demo-github-actions/.github/workflows/chart-on-push.yml@main
+    with:
+      chart_name: wiremock
+    secrets:
+      vault_addr: ${{ secrets.VAULT_ADDR }}
+      vault_namespace: ${{ secrets.VAULT_NAMESPACE }}
+      vault_role: ${{ secrets.VAULT_ROLE }}
